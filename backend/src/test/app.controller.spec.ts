@@ -1,9 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { ToolsService } from './tools/tools.service';
-import { KnowledgeService } from './knowledge/knowledge.service';
-import { VECTOR_STORE } from './vector-store/vector-store.module';
+import { AppController } from '../app.controller';
+import { AppService } from '../app.service';
+import { ToolsService } from '../tools/tools.service';
+import { KnowledgeService } from '../knowledge/knowledge.service';
+import { VECTOR_STORE } from '../vector-store/vector-store.module';
 
 describe('AppController', () => {
   let appController: AppController;
