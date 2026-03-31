@@ -1,0 +1,75 @@
+graph TD
+    User(["👤 User"])
+
+    subgraph Frontend["Frontend — React + Vite"]
+        UI["Chat Interface\n(App.tsx)"]
+        MD["react-markdown\nResponse Renderer"]
+    end
+
+    subgraph Backend["Backend — NestJS"]
+        API["REST API\n(AppController)"]
+
+        subgraph Agent["LangGraph ReAct Agent"]
+            direction TB
+            Reason["🧠 Reason\nAnalyse user intent\n+ select tool"]
+            Act["⚡ Act\nCall tool"]
+            Observe["👁 Observe\nProcess tool result"]
+            Reflect["🔄 Reflect\nVerify result\nself-correct if needed"]
+            Reason --> Act --> Observe --> Reflect --> Reason
+        end
+
+        Memory["MemorySaver\nConversation State"]
+        Prompt["System Prompt\n(buildSystemPrompt)"]
+    end
+
+    subgraph LLMs["LLM Layer"]
+        Gemini["Google Gemini 2.0 Flash\n(recommended)"]
+        Ollama["Ollama — Llama 3.1\n(local / offline)"]
+    end
+
+    subgraph Tools["Tool Providers (MCP)"]
+        Jira["Jira Tools ×8\ncreate · assign · transition\nlist · get · get-myself"]
+        GitHub["GitHub Tools ×10\nbranch · commit · push\nPR · search · file ops"]
+        FS["Filesystem Tools ×9\nread · write · move · search\ndelete · list · append"]
+        Tests["Test Tool ×1\nrun-test-command"]
+    end
+
+    subgraph RAG["RAG Pipeline"]
+        KnowledgeTool["search_internal_knowledge"]
+        Embeddings["Google Gemini Embeddings\n(gemini-embedding-001)"]
+        VectorDB[("PostgreSQL + pgvector\ndocuments_vector\nport 5433")]
+        KnowledgeDocs["Knowledge Base\nMarkdown docs\n(backend/data/)"]
+    end
+
+    subgraph Infra["Infrastructure"]
+        Docker["Docker Compose\nPostgreSQL 16 + pgvector"]
+    end
+
+    %% User flow
+    User -->|"chat message"| UI
+    UI -->|"POST /chat"| API
+    API --> Agent
+    Agent -->|"response"| API
+    API -->|"text"| MD
+    MD --> User
+
+    %% Agent internals
+    Agent <--> Memory
+    Prompt -->|"injected per request"| Agent
+    Agent <-->|"model inference"| Gemini
+    Agent <-.->|"fallback"| Ollama
+
+    %% Tool connections
+    Act --> Jira
+    Act --> GitHub
+    Act --> FS
+    Act --> Tests
+    Act --> KnowledgeTool
+
+    %% RAG internals
+    KnowledgeTool --> Embeddings
+    Embeddings <--> VectorDB
+    KnowledgeDocs -->|"chunked + embedded\non startup"| VectorDB
+
+    %% Infrastructure
+    Docker --> VectorDB
