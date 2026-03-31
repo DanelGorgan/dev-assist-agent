@@ -27,7 +27,7 @@ export class TestToolsProvider implements ToolProvider {
       new DynamicStructuredTool({
         name: 'run_test_command',
         description:
-          'Run test commands in a specific directory (e.g., "yarn test" in backend/).',
+          'Execute test suite commands like "yarn test", "npm test", or "pnpm test" in a specific directory. Supports passing test file patterns (e.g., "yarn test my.spec.ts").',
         schema: z.object({
           command: z
             .string()
