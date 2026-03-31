@@ -74,12 +74,13 @@ DO NOT use this tool for:
 
 "Create PR" / "Create PR for DEV-X" / "Create a pull request for DEV-X"
 
-→ CALL create_pr_from_local_changes(
-    issueKey: "DEV-X",
-    branchName: "feat/DEV-X-brief-description-${timestamp}",
-    owner: "DanelGorgan",
-    repo: "dev-assist-agent"
-  )
+→ CALL create_pr_from_local_changes with:
+   - branchName: "feat/DEV-X-brief-description-${timestamp}"
+   - commitMessage: "feat: [brief summary of changes]"
+   - prTitle: [same as commitMessage]
+   - prBody: "Closes DEV-X\n\n[Summary of changes]"
+   - owner: "DanelGorgan"
+   - repo: "dev-assist-agent"
 → This tool fetches Jira details, creates branch, commits, pushes, AND creates the PR automatically
 → The tool returns the PR URL. RESPOND exactly: "PR created successfully: " followed by the URL
 → Example: if tool returns "https://github.com/foo/bar/pull/5", respond "PR created successfully: https://github.com/foo/bar/pull/5"
