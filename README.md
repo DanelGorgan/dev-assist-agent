@@ -1,4 +1,4 @@
-# DevAssist Agent - AI-Powered developmentwwwwww Assistant
+# DevAssist Agent - AI-Powered development Assistant
 
 > **Ciklum AI Academy Capstone Project** - An autonomous AI agent that integrates Jira, GitHub, filesystem operations, and RAG-based knowledge retrieval to automate development workflows.
 
